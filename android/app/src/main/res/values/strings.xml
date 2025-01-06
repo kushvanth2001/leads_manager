@@ -1,0 +1,16 @@
+<resources>
+    <!-- Other string resources -->
+    <string name="avatar">Avatar</string>
+    <string name="close">close</string>
+     <string name="telephone">Make a Call</string>
+      <string name="whatsapp">Open Whatsapp</string>
+     <string name="asset_statements">
+      [{
+        "relation": ["delegate_permission/common.get_call_log"],
+        "target": {
+          "namespace": "web",
+          "site": "https://example.com"
+        }
+      }]
+    </string>
+</resources>

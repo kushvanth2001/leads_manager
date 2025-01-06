@@ -1,0 +1,11 @@
+[
+    {
+      "relation": ["delegate_permission/common.get_call_log"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.leads.manager",
+        "sha256_cert_fingerprints": ["8A:41:CD:2D:6E:50:12:3F:C1:0C:21:89:1F:DE:BF:F7:72:D6:BC:9A:AA:14:9C:DD:50:8A:C7:73:BA:41:3A:D4"]
+      }
+    }
+  ]
+  

@@ -1,0 +1,147 @@
+
+Map<String, List<String>> clientGroupFeatures = {};
+for (var merchant in response['merchants']) {
+  String clientGroupName = merchant['clientGroupName'];
+  if (!clientGroupFeatures.containsKey(clientGroupName)) {
+    clientGroupFeatures[clientGroupName] = [];
+  }
+  for (var feature in merchant['user']['role']['features']) {
+    clientGroupFeatures[clientGroupName].add(feature['name']);
+  }
+}
+
+
+
+String clientGroupName = "DivigoIndia";
+
+// Define a map of feature names to screens
+Map<String, Widget> featureScreens = {
+  'CatalogueScreen': CatalogueScreen(),
+  'OrderScreen': OrderScreen(),
+  'LeadScreen': LeadScreen(),
+  'LiveAgentScreen': Chatscreen(),
+  'CustomersScreen': CustomersScreen(),
+  //@marketing
+ //'Marketing':MarketingScreen(),
+  'ProfileScreen': ProfileScreen(),
+};
+
+// Create a list of screens whose corresponding feature name is present in the clientGroupFeatures map for the given clientGroupName
+List<Widget> screens = [];
+for (var entry in featureScreens.entries) {
+  if (clientGroupFeatures[clientGroupName].contains(entry.key)) {
+    screens.add(entry.value);
+  }
+}
+
+// ...
+
+return Scaffold(
+  // ...
+  body: screens[_screenIndex],
+  bottomNavigationBar: BottomNavigationBar(
+    // ...
+    onTap: (value) => {
+      setState(() {
+        _screenIndex = value;
+      })
+    },
+    items: customButtomNavigation(),
+  ),
+);
+
+customButtomNavigation() {
+  List<BottomNavigationBarItem> items = [];
+
+  if (clientGroupFeatures[clientGroupName].contains('CatalogueScreen')) {
+    items.add(BottomNavigationBarItem(
+      icon: Icon(Icons.category),
+      label: "Catalogue",
+    ));
+  }
+
+    items.add(BottomNavigationBarItem(
+      icon: Icon(Icons.outbox_rounded),
+      label: "Orders",
+    ));
+  
+
+  if (clientGroupFeatures[clientGroupName].contains('LeadScreen')) {
+    items.add(BottomNavigationBarItem(
+      icon: Icon(Icons.leaderboard),
+      label: "Leads",
+    ));
+  }
+
+    items.add(BottomNavigationBarItem(
+      icon: Icon(Icons.chat),
+      label: "Chat",
+    ));
+  
+
+  if (clientGroupFeatures[clientGroupName].contains('CustomersScreen')) {
+    items.add(BottomNavigationBarItem(
+      icon: Icon(Icons.people),
+      label: "Customer",
+    ));
+  
+
+    items.add(BottomNavigationBarItem(
+      icon: Icon(Icons.account_box),
+      label: "Profile",
+    ));
+  
+
+  return items;
+}
+}
+
+String clientGroupName = "DivigoIndia";
+
+customButtomNavigation() {
+  List<BottomNavigationBarItem> items = [];
+
+  if (clientGroupFeatures[clientGroupName].contains('CatalogueScreen')) {
+    items.add(BottomNavigationBarItem(
+      icon: Icon(Icons.category),
+      label: "Catalogue",
+    ));
+  }
+
+  if (clientGroupFeatures[clientGroupName].contains('OrderScreen')) {
+    items.add(BottomNavigationBarItem(
+      icon: Icon(Icons.outbox_rounded),
+      label: "Orders",
+    ));
+  }
+
+  if (clientGroupFeatures[clientGroupName].contains('LeadScreen')) {
+    items.add(BottomNavigationBarItem(
+      icon: Icon(Icons.leaderboard),
+      label: "Leads",
+    ));
+  }
+
+  if (clientGroupFeatures[clientGroupName].contains('LiveAgentScreen')) {
+    items.add(BottomNavigationBarItem(
+      icon: Icon(Icons.chat),
+      label: "Chat",
+    ));
+  }
+
+  if (clientGroupFeatures[clientGroupName].contains('CustomersScreen')) {
+    items.add(BottomNavigationBarItem(
+      icon: Icon(Icons.people),
+      label: "Customer",
+    ));
+  }
+
+  if (clientGroupFeatures[clientGroupName].contains('ProfileScreen')) {
+    items.add(BottomNavigationBarItem(
+      icon: Icon(Icons.account_box),
+      label: "Profile",
+    ));
+  }
+
+  return items;
+}
