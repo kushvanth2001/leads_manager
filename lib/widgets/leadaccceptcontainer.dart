@@ -66,7 +66,7 @@ class _FlameContainerState extends State<FlameContainer>
         return AnimatedBuilder(
           animation: _controller,
           builder: (context, child) {
-            return Container(height: 100,width: MediaQuery.of(context).size.width,color: Colors.blue.shade300,child: Center(child: Text("Add it to Favirouite"),),);
+            return Container(height: 100,width: MediaQuery.of(context).size.width,color: Colors.blue.shade300,child: Center(child: Text("Add it to Favourite"),),);
           },
         );
       },

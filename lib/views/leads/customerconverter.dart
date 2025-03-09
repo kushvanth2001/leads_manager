@@ -27,6 +27,7 @@ class CustomerConvertor {
     String? email,
     String? organizationName,
     String? leadId,
+    {bool fromLeads =false}
   ) {
     TextEditingController textMobileNumber =
         TextEditingController(text: mobileNumber);
@@ -111,12 +112,14 @@ if(e==null){
                                 organizationName,
                                 leadId);
                             Navigator.of(context).pop();
+                            if(!fromLeads){
                             res == true
                                 ? QuotationCreator().selectCustomerDialog(
                                     mobileNumber!.length <= 10
                                         ? "91$mobileNumber"
                                         : mobileNumber)
                                 : null;
+                            }
                           }else{
                             Fluttertoast.showToast(msg: "No value in the mobile number Feild");
                           }},

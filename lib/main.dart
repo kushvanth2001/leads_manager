@@ -203,9 +203,15 @@ Future<void> _requestPermissions() async {
     Permission.systemAlertWindow,
   ].request();
 
-  bool allPermissionsGranted =
-      statuses.values.every((status) => status.isGranted);
+  bool allPermissionsGranted =statuses.values.every((status) => status.isGranted);
 
+  Map<String, String> permissionResults = {};
+
+  statuses.forEach((permission, status) {
+    permissionResults[permission.toString()] = status.toString();
+  });
+
+    print("All permissions granted ${permissionResults}");
   if (allPermissionsGranted) {
     print("All permissions granted");
     // Proceed to the main part of your app

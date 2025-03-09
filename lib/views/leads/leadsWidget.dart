@@ -85,6 +85,8 @@ class LeadWidget extends StatefulWidget {
 }
 
 class _LeadWidgetState extends State<LeadWidget> {
+    bool conversationPrivillage=  true;
+    bool calllogsPrivillage= true;
   List<dynamic> _template = [];
   LeadController leadController = Get.find<LeadController>();
   late final SharedFunctions sharedFunctions;
@@ -143,13 +145,18 @@ class _LeadWidgetState extends State<LeadWidget> {
 
 // Fetch the list of call status objects and update the state
 
-  
+  initAsync();
     // setdata();
   }
 
 // setdata()async{
 //     _getTemplates();
 // }
+
+initAsync()async{
+ conversationPrivillage=await SharedPrefsHelper().getviewCommnuicationsPrivillage();
+   calllogsPrivillage=await SharedPrefsHelper().getviewcallLogsPrivillage() ;
+}
   bool _isExpanded = false;
   final GlobalKey _tooltipKey = GlobalKey();
   @override
@@ -417,7 +424,7 @@ Text('${_lead.leadStatus?.statusName}',style:const TextStyle(fontSize: 11,color:
                     child: _isExpanded
                         ? Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child:actionMenuItems(_lead,context)
+                            child: actionMenuItems(_lead,context,calllogsPrivillage: calllogsPrivillage,conversationPrivillage: conversationPrivillage),
                           )
                         : Container(),
                   ),
@@ -1200,7 +1207,7 @@ msg: "You need to add a Reminder Text to Customer");
   );
 }
 
-actionMenuItems(Lead _lead,BuildContext context){
+actionMenuItems(Lead _lead,BuildContext context,{bool conversationPrivillage=true,bool calllogsPrivillage=true}){
   LeadController leadController=Get.find<LeadController>();
   
 return  SingleChildScrollView(
@@ -1208,7 +1215,7 @@ return  SingleChildScrollView(
   child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                    IconButton(
+                                   calllogsPrivillage? IconButton(
                                        iconSize: 19,
                                         onPressed: () {
                                          Get.to(()=>CallLogsScreen(
@@ -1218,7 +1225,7 @@ return  SingleChildScrollView(
                                         },
                                         icon: Image.asset(
                                           'assets/icon/telephone2.png',width: 37,height: 37,
-                                        )),
+                                        )):Container(),
                                   IconButton(
                                     iconSize: 19,
                                       icon: Image.asset("assets/icon/send.png",width: 28,height: 28,),
@@ -1315,7 +1322,7 @@ return  SingleChildScrollView(
                                         btnWhatsapp(_lead.mobileNumber ?? "");
                                       },
                                       icon: Image.asset("assets/icon/whatsappIcon.png",height: 28,width: 28,)),
-                                  IconButton(
+                             conversationPrivillage?     IconButton(
                                       onPressed: () async{
 
                                         if(_lead.mobileNumber!=null || _lead.mobileNumber==''){
@@ -1372,7 +1379,7 @@ return  SingleChildScrollView(
                                         }
                                       },
                                       icon: Image.asset("assets/icon/chat.png",height: 28,width: 28,),
-                                      color: Colors.blue),
+                                      color: Colors.blue):Container(),
   
   
                                        Tooltip(
@@ -1405,13 +1412,17 @@ return  SingleChildScrollView(
                                
                                
                                IconButton(onPressed: ()async{
-
+  if(_lead.mobileNumber!=null &&_lead.mobileNumber!=""){
 Get.to(()=>oppr. AddOpportunityScreen(editedData: {
   'leadid':_lead.id,
   "mobileNumber":_lead.mobileNumber,
   "customerName":_lead.customerName
   
-},));
+},));}
+else{
+Fluttertoast.showToast(msg: "Can Not Create Opportunitie without Mobile Number");
+
+}
         }, icon: Icon(Icons.call_split))
                                 ],
                               ),

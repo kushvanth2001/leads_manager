@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -64,13 +65,15 @@ Map<String,dynamic>? lead= await selectLeadDialog(context);
 
 if(lead!=null){
 
-
+if(lead["mobileNumber"]==null||lead["mobileNumber"]==''){
 Get.to(()=> AddOpportunityScreen(editedData: {
   'leadid':lead['leadid'],
   "mobileNumber":lead['mobileNumber'],
   "customerName":lead['customerName']
   
-},));
+},));}else{
+  Fluttertoast.showToast(msg: "Can Not Create Opportunitie without Mobile Number");
+}
 }else{
   Fluttertoast.showToast(msg: "Lead Not Selected");
 }
@@ -86,7 +89,34 @@ _fetchOpportunities();
           controller: _scrollController,
           itemCount: _opportunities.length,
           itemBuilder: (context, index) {
-            return OpportunityCard(opportunity: _opportunities[index]);
+
+            return 
+            Slidable(
+ 
+  endActionPane: ActionPane(
+    motion: ScrollMotion(),
+    children: <Widget>[
+      SlidableAction(
+        onPressed: (context) async{
+          if(_opportunities[index]["id"]!=null){
+await SnapPeNetworks().deleteOpputinity(_opportunities[index]["id"].toString());
+setState(() {
+           _opportunities = [];
+  _currentPage = 0; 
+});
+   _fetchOpportunities();
+            }    },
+        backgroundColor: Colors.red,
+        foregroundColor: Colors.white,
+        icon: Icons.delete,
+        label: 'Delete',
+      ),
+    ],
+  ),
+  child:   OpportunityCard(opportunity: _opportunities[index]) // Replace with your actual child widget
+);
+            
+          
           },
         ),
       ),
@@ -143,7 +173,7 @@ Future<Map<String, dynamic>?> selectLeadDialog(BuildContext context) {
                   itemBuilder: (context, Map<String, dynamic> lead) {
                     return ListTile(
                       title: Text("${lead["customerName"]}"),
-                      subtitle: Text("${lead["mobileNumber"]}"),
+                      subtitle:lead["mobileNumber"]!=null? Text("${lead["mobileNumber"]}"):Text(""),
                     );
                   },
                   onSuggestionSelected: (dynamic lead) {

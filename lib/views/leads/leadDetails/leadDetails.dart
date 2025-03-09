@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:leads_manager/Controller/chat_controller.dart';
 import 'package:leads_manager/constants.dart';
+import 'package:leads_manager/helper/Filepickerhelper.dart';
 import 'package:leads_manager/helper/SharedPrefsHelper.dart';
 import 'package:leads_manager/helper/networkHelper.dart';
 import 'package:leads_manager/models/model_Merchants.dart';
@@ -39,6 +40,7 @@ import 'package:leads_manager/widgets/incrordecr.dart';
 import 'package:leads_manager/widgets/skeletonitems.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../Controller/leadDetails_controller.dart';
 import '../../../Controller/leads_controller.dart';
 import '../../../constants/colorsConstants.dart';
@@ -83,6 +85,8 @@ class _LeadDetailsState extends State<LeadDetails> {
   String firstAppName = '';
   final List<ChatModel>? chatModels = ChatController.newRequestList;
   final _formKey = GlobalKey<FormState>();
+  bool conversationPrivillage=  true;
+    bool calllogsPrivillage= true;
   @override
   void initState() {
     // TODO: implement initState
@@ -91,6 +95,10 @@ class _LeadDetailsState extends State<LeadDetails> {
   }
 
   setdata() async {
+
+ conversationPrivillage=await SharedPrefsHelper().getviewCommnuicationsPrivillage();
+   calllogsPrivillage=await SharedPrefsHelper().getviewcallLogsPrivillage() ;
+
      print("tasskkid${widget.lead.id} ");
     fetchCustomColumns(widget.lead.id, widget.isNewLead).then((columns) {
       if (mounted) {
@@ -142,7 +150,7 @@ class _LeadDetailsState extends State<LeadDetails> {
       }
     });
     var k = widget.isNewLead
-        ? LeadDetailsModel(mobileNumber:int.tryParse(isValidIndianMobileNumber(widget.lead.mobileNumber ?? "")??"")??null,leadSource:widget.lead.leadSource!=null?widget.lead.leadSource:null )
+        ? LeadDetailsModel(mobileNumber:int.tryParse(isValidIndianMobileNumber(widget.lead.mobileNumber ?? "")??"")??null,leadSource:widget.lead.leadSource!=null?widget.lead.leadSource:null,assignedBy:widget.lead.assignedBy!=null?widget.lead.assignedBy:null  )
         : await SnapPeNetworks()
             .getSingleLead("${widget.lead.id}", isalldetails: true);
     print(k);
@@ -247,7 +255,7 @@ print(e.toJson());
                   child: Column(
                     children: [
                       //from lead widget
-                widget.isNewLead?   Container() : actionMenuItems(widget.lead,context),
+                widget.isNewLead?   Container() : actionMenuItems(widget.lead,context,calllogsPrivillage: calllogsPrivillage,conversationPrivillage: conversationPrivillage),
 
                       Container(
                         margin:
@@ -791,7 +799,48 @@ multidropdownitems=items;
             DateTime? pickedDateTime = await showOmniDateTimePicker( context: context, initialDate:customColumn.value==null? DateTime.now():DateTime.parse(customColumn.value), firstDate: DateTime(1940), lastDate: DateTime(2101), ); if (pickedDateTime != null) { setState(() { overallleaddetailsmodel.customColumns![i].value = pickedDateTime.toIso8601String(); 
             calcontroller.text = DateFormat('dd-MM-yyyy, h:mm a') .format(pickedDateTime); }); } }, ), ); 
         break;
+        case 'Attachment':
+          TextEditingController attachController = TextEditingController(); 
+           (customColumn.value!=null && customColumn.value!=''&& customColumn.value!= "None")?  attachController.text= customColumn.value :"";
+        textFields.add( Container(
+              margin: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+              child: TextFormField(
+                initialValue: customColumn?.value?.toString() ?? '',
+                readOnly:  true,
+                onTap: ()async{
+                  if(attachController.text==''){
+                   var k=await FileUploadingManger.uploadFiles();
+                   try{
 
+              overallleaddetailsmodel.customColumns![i].value=      k?[0];
+              attachController.text=k?[0];
+                   }catch(e){
+
+                    print(e);
+                   }
+                   
+                   }else{
+
+  Uri uri = Uri.parse(attachController.text);
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  } else {
+    
+  }
+                   }
+                },
+          
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  labelText: customColumn?.displayName,
+                ),
+              ),
+            ),);
+       
+
+        break;
           default:
             keyboardType = TextInputType.text;
         }

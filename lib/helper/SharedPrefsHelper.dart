@@ -582,7 +582,34 @@ getprefsobj(){
   }
 
    setcanDeleteLeadPrivillage ( bool name) {
-    prefs.setBool("canDeleteLeadPrivillage", name);
+    prefs.setBool("canDeleteLeadPrivillage", name); 
+  }
+
+
+    Future<bool> getviewcallLogsPrivillage() async {
+    return prefs.getBool("getviewcallLogsPrivillage")??false;
+  }
+
+   setviewcallLogsPrivillage ( bool name) {
+    prefs.setBool("getviewcallLogsPrivillage", name);
     
   }
+
+
+ Future<bool> getviewCommnuicationsPrivillage() async {
+    return prefs.getBool("getviewCommnuicationsPrivillage")??false;
+  }
+
+   setviewCommnuicationsPrivillage ( bool name) {
+    prefs.setBool("getviewCommnuicationsPrivillage", name); 
+  }
+ Future<bool> getviewOppurtunityPrivillage() async {
+    return prefs.getBool("getviewOppurtunityPrivillage")??false;
+  }
+
+   setviewOppurtunityPrivillage ( bool name) {
+    prefs.setBool("getviewOppurtunityPrivillage", name); 
+  }
+
+
 }

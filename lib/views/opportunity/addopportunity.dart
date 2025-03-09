@@ -108,7 +108,7 @@ print(communities);
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 8.0),
                     child: TextFormField(
-                    
+                      readOnly:   (widget.editedData!=null && (formData["customerName"]!=null && formData["customerName"]!="" )) ? true:false,
                       initialValue: formData["customerName"],
                       decoration: overallborderstyle("Customer Name",null,null),
                       onChanged: (value) => formData["customerName"] = value,
@@ -123,7 +123,7 @@ print(communities);
                   Container(
                         margin: const EdgeInsets.symmetric(vertical: 8.0),
                     child: TextFormField(
-                      readOnly: widget.editedData!=null ? true:false,
+                      readOnly: (widget.editedData!=null && (formData["mobileNumber"]!=null)) ? true:false,
                       initialValue: formData["mobileNumber"],
                       decoration: overallborderstyle("Mobile Number",null,null), 
                       keyboardType: TextInputType.phone,
@@ -261,7 +261,7 @@ print(communities);
                     
 bool k =await SnapPeNetworks().postoppurtunity(formData);
 if(k){
-  Fluttertoast.showToast(msg: "Opportunity Saved");
+  Fluttertoast.showToast(msg: "Opportunity Saved ✅" );
 Get.back(result: true);
 }else{
   Fluttertoast.showToast(msg: "Error while Sending  Opportunity please try again");
@@ -325,7 +325,8 @@ Get.back(result: true);
             DateTime? pickedDateTime = await showOmniDateTimePicker( context: context, initialDate:customColumn.value==null? DateTime.now():DateTime.parse(customColumn.value), firstDate: DateTime(1940), lastDate: DateTime(2101), ); 
             if (pickedDateTime != null) {
               print(pickedDateTime);
-               setState(() { formData['customColumns'][i]['value'] = pickedDateTime.toIso8601String(); 
+               setState(() { 
+                formData['customColumns'][i]['value'] = pickedDateTime.toIso8601String(); 
             calcontroller.text = DateFormat('dd-MM-yyyy, h:mm a') .format(pickedDateTime); }); } }, ), ); 
         break;
 

@@ -320,53 +320,79 @@ class Supervisor {
   String? userRole;
   Role? role;
   dynamic pincode;
-  dynamic supervisor; // This seems to be null in JSON, so it can be dynamic
+  dynamic supervisor; // This should be handled properly
   String? addressLine1;
   String? addressLine2;
   String? addressType;
 
-  Supervisor(
-      {this.status,
-      this.messages,
-      this.id,
-      this.firstName,
-      this.userId,
-      this.lastName,
-      this.userName,
-      this.mobileNumber,
-      this.emailAddress,
-      this.password,
-      this.isDefault,
-      this.userRole,
-      this.role,
-      this.pincode,
-      this.supervisor,
-      this.addressLine1,
-      this.addressLine2,
-      this.addressType});
+  Supervisor({
+    this.status,
+    this.messages,
+    this.id,
+    this.firstName,
+    this.userId,
+    this.lastName,
+    this.userName,
+    this.mobileNumber,
+    this.emailAddress,
+    this.password,
+    this.isDefault,
+    this.userRole,
+    this.role,
+    this.pincode,
+    this.supervisor,
+    this.addressLine1,
+    this.addressLine2,
+    this.addressType,
+  });
 
   factory Supervisor.fromJson(Map<String, dynamic> json) {
     return Supervisor(
-        status: json['status'],
-        messages: json['messages'],
-        id: json['id'],
-        firstName: json['firstName'],
-        userId: json['userId'],
-        lastName: json['lastName'],
-        userName: json['userName'],
-        mobileNumber: json['mobileNumber'],
-        emailAddress: json['emailAddress'],
-        password: json['password'],
-        isDefault: json['isDefault'],
-        userRole: json['userRole'],
-        role: json['role'] == null ? null : Role.fromJson(json['role']),
-        pincode: json['pincode'],
-        supervisor: json['supervisor'],
-        addressLine1: json['addressLine1'],
-        addressLine2: json['addressLine2'],
-        addressType: json['addressType']);
+      status: json['status'],
+      messages: json['messages'],
+      id: json['id'],
+      firstName: json['firstName'],
+      userId: json['userId'],
+      lastName: json['lastName'],
+      userName: json['userName'],
+      mobileNumber: json['mobileNumber'],
+      emailAddress: json['emailAddress'],
+      password: json['password'],
+      isDefault: json['isDefault'],
+      userRole: json['userRole'],
+      role: json['role'] == null ? null : Role.fromJson(json['role']),
+      pincode: json['pincode'],
+      supervisor: json['supervisor'],
+      addressLine1: json['addressLine1'],
+      addressLine2: json['addressLine2'],
+      addressType: json['addressType'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'status': status,
+      'messages': messages,
+      'id': id,
+      'firstName': firstName,
+      'userId': userId,
+      'lastName': lastName,
+      'userName': userName,
+      'mobileNumber': mobileNumber,
+      'emailAddress': emailAddress,
+      'password': password,
+      'isDefault': isDefault,
+      'userRole': userRole,
+      'role': role?.toJson(), // Ensure role is converted to JSON
+      'pincode': pincode,
+      'supervisor': supervisor, // Make sure supervisor is JSON-serializable
+      'addressLine1': addressLine1,
+      'addressLine2': addressLine2,
+      'addressType': addressType,
+    };
   }
 }
+
 
 class AssignedTo {
   AssignedTo({

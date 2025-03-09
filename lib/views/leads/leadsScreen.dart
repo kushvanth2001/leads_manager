@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:leads_manager/models/model_tag.dart';
 import 'package:leads_manager/utils/snapPeNetworks.dart';
 import 'package:leads_manager/views/leads/FavrioteLeadCourosel.dart';
+import 'package:leads_manager/views/leads/customerconverter.dart';
 import 'package:leads_manager/views/leads/leadfilter.dart';
 import 'package:leads_manager/views/leads/mybacklogs.dart';
 import 'package:leads_manager/views/opportunity/opportunityscreen.dart';
@@ -59,7 +60,7 @@ class LeadScreenState extends State<LeadScreen> with WidgetsBindingObserver {
    Timer? _debounce; 
   bool _isLoading = false;
   String? userId;
-  
+  bool oppurtinityprivvilage=true;
 bool isjumping=false;
   String? liveAgentUserName;
   Future<void>? _loadingFuture;
@@ -112,8 +113,13 @@ bool isjumping=false;
 //     print('Scrolling up');
 //   }
 // });sea
-  }
 
+setdata();
+  }
+setdata()async{
+oppurtinityprivvilage=await SharedPrefsHelper().getviewOppurtunityPrivillage();
+
+}
   @override
   void dispose() {
     textEditingController.dispose();
@@ -276,14 +282,32 @@ bool isjumping=false;
                                           .leads![index]
                                           .id
                                           .toString();
+                                      int? pincode = leadController
+                                          .leadModel
+                                          .value
+                                          .leads![index]
+                                          .pincode;
+
+                                                
+                                             CustomerConvertor().showComplaintDialog(
+                                                           context,
+                                                           pincode,
+                                                           mobileNumber,
+                                                           name,
+                                                           email,
+                                                           organizationName,
+                                                           leadId,
+                                                           fromLeads: true
+                                                         );
+                                                  
                               
-                                      showComplaintDialog(
-                                          context,
-                                          mobileNumber,
-                                          name,
-                                          email,
-                                          organizationName,
-                                          leadId);
+                                      // showComplaintDialog(
+                                      //     context,
+                                      //     mobileNumber,
+                                      //     name,
+                                      //     email,
+                                      //     organizationName,
+                                      //     leadId);
                                     }
                                   },
                                   backgroundColor: Colors.green,
@@ -538,7 +562,7 @@ bool isjumping=false;
                                                 Get.to(()=> MyBackLogs());
                                                 }),
 
-                                                    TextButton.icon(
+                                             oppurtinityprivvilage?       TextButton.icon(
                                                 icon: Icon(
                             Icons.call_split,
                             color: Colors.white,
@@ -549,7 +573,7 @@ bool isjumping=false;
                                                 ),
                                                 onPressed: () {
                                                 Get.to(()=> OpportunityListScreen());
-                                                }),
+                                                }):Container(),
 
                                                        TextButton.icon(
                                                 icon: Icon(
@@ -557,7 +581,8 @@ bool isjumping=false;
                             color: Colors.white,
                                                 ),
                                                 label: Text(
-                            "Favourites",
+                            "Favorite",
+                             
                             style: TextStyle(color: Colors.white),
                                                 ),
                                                 onPressed: () {
@@ -572,8 +597,22 @@ bool isjumping=false;
                                              
                                                 ],),
                           ),
-                                              buildChipset()
-                                             //buildChipset()
+
+                                              buildChipset(),
+                                             Padding(
+                                               padding: const EdgeInsets.only(left: 8),
+                                               child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                mainAxisAlignment:MainAxisAlignment.start,
+                                                 children: [
+                                                   Obx(()=> Text("Total Leads:${leadController.leadModel.value.totalRecords.toString()}     ")),
+                                                 Obx(()=> Text("  Total Pages:${leadController.leadModel.value.pages.toString()}")) 
+                                                
+                                                 ],
+                                               ),
+                                             ),
+
+                                            //buildChipset()
                         ],
                       )
                     
@@ -904,7 +943,7 @@ leadController.currentPage=0;
         "countryCode": "+91",
         "userName": null,
         "password": null,
-        "phoneNo": "91${textMobileNumber.text}",
+        "phoneNo": textMobileNumber.text.length==10?"+91${textMobileNumber.text}":"+${textMobileNumber.text}",
         "community": ".",
         "relativeLocation": null,
         "alternativeNo1": null,
@@ -919,8 +958,8 @@ leadController.currentPage=0;
         "addressLine1": null,
         "addressLine2": null,
         "addressType": "Home",
-        "mobileNumber": "+91${textMobileNumber.text}",
-        "applicationNo": "91${textMobileNumber.text}",
+        "mobileNumber": textMobileNumber.text.length==10?"+91${textMobileNumber.text}":"+${textMobileNumber.text}",
+        "applicationNo":textMobileNumber.text.length==10?"+91${textMobileNumber.text}":"+${textMobileNumber.text}",
         "token": null,
         "userId": null,
         "isValid": false,
@@ -1207,6 +1246,19 @@ leadController.currentPage=0;
           )),
     );
   }
+
+Color? getSafeColor(String? colorStr) {
+  try {
+    if (colorStr == null || colorStr.isEmpty) return null;
+    if (colorStr.startsWith("#")) {
+      return Color(int.parse(colorStr.substring(1), radix: 16) + 0xFF000000);
+    }
+    return null; // Return null for invalid cases
+  } catch (e) {
+    return null; // Return null if parsing fails
+  }
+}
+
 Widget buildChipset() {
   return SingleChildScrollView(
     scrollDirection: Axis.horizontal,
@@ -1358,6 +1410,7 @@ Widget buildChipset() {
         return Padding(
           padding: const EdgeInsets.only(left: 8),
           child: Chip(
+            color: item.color!=null&& getSafeColor(item.color)!=null?WidgetStatePropertyAll(getSafeColor(item.color)):null,
             label: Text("${item.statusName }"),
             backgroundColor: Colors.blue,
             shape: RoundedRectangleBorder(

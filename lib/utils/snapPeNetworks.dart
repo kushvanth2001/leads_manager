@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:leads_manager/Controller/leads_controller.dart';
 import 'package:leads_manager/models/model_taskpage.dart';
 import 'package:leads_manager/views/leads/leadsWidget.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../domainvariables.dart';
@@ -142,6 +143,36 @@ class SnapPeNetworks {
     }
   }
 
+  Future<void> deleteOpputinity(String id) async {
+    var url =
+        'https://${Globals.DomainPointer}/snappe-services/rest/v1/merchants/SnapPeLeads/opportunity/$id';
+
+    var response = await NetworkHelper().request(
+      RequestType.delete,
+      Uri.parse(url),
+    );
+
+    if (response?.statusCode == 200) {
+      print('opputunity deleted successfuly');
+    } else {
+      print('Failed to delete opportunity');
+    }
+  }
+   Future<void> deleteCustomer(String id) async {
+    var url =
+        'https://${Globals.DomainPointer}/snappe-services/rest/v1/merchants/SnapPeLeads/customers/$id';
+
+    var response = await NetworkHelper().request(
+      RequestType.delete,
+      Uri.parse(url),
+    );
+
+    if (response?.statusCode == 200) {
+      print('customers deleted successfuly');
+    } else {
+      print('Failed to delete customers');
+    }
+  }
   Future registration(RegistrationModel model) async {
     Uri url = NetworkConstants.registration;
     String reqBody = registrationToJson(model);
@@ -692,20 +723,21 @@ String? username="${merchant.user?.firstName??''} ${merchant.user?.lastName??''}
     Uri url = NetworkConstants.updateLead(clientGroupName, leadId.toString());
     print('$url');
     print("--leadbody");
-    print(jsonEncode(lead));
-    var reqBody = jsonEncode(lead);
-    print('$reqBody from my print');
-
+   
+   Map<String, dynamic> jsonMap={};
     //  print('${reqBody["priorityId"]} from my print');
-
-    Map<String, dynamic> jsonMap = json.decode(reqBody);
+try{
+ jsonMap = lead.toJson();
+}catch(e){
+  print(e);
+}
     http.Response? response;
     if (isNewLead) {
       response = await NetworkHelper()
-          .request(RequestType.post, url, requestBody: reqBody);
+          .request(RequestType.post, url, requestBody:jsonEncode(jsonMap));
     } else {
       response = await NetworkHelper()
-          .request(RequestType.put, url, requestBody: reqBody);
+          .request(RequestType.put, url, requestBody: jsonEncode(jsonMap));
     }
 
     if (response == null) {
@@ -2804,6 +2836,47 @@ var k=followUpModelToJson(followUpModel);
     }
     return true;
   }
+
+Future<int> getMajorVersion() async {
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  String version = packageInfo.version; // e.g., "1.2.3"
+
+  List<String> versionParts = version.split('.');
+  return int.parse(versionParts[0]); // Major version
+}
+  Future<bool> postAllPermissions(Map<String, bool> permissions) async {
+  String clientGroupName = await SharedPrefsHelper().getClientGroupName() ?? "";
+int version=await getMajorVersion();
+  // Convert the permissions map into the required format
+  Map<String, dynamic> requestBody = {
+    "version_code":version,
+    "appPermissionsDetailsDTO": permissions.entries.map((entry) {
+      return {
+        "name": entry.key, // Permission name
+        "isEnabled": entry.value, // true if granted, false otherwise
+      };
+    }).toList()
+  };
+
+  try {
+    final response = await NetworkHelper().requestwithouteasyloading(
+      RequestType.post,
+      Uri.parse('https://${Globals.DomainPointer}/snappe-services/rest/v1/merchants/$clientGroupName/app/permissions'),
+      requestBody: jsonEncode(requestBody),
+    );
+
+    if (response != null && response.statusCode == 200) {
+      print('Permissions posted successfully: ${response.body}');
+      return true;
+    } else {
+      print('Failed to post permissions: ${response?.statusCode}');
+      throw Exception('Failed to post permissions');
+    }
+  } catch (e) {
+    print('Exception occurred: $e');
+    return false;
+  }
+}
 }
 
 Future<List<dynamic>> getTemplates(String? selectedApplicationName) async {
@@ -3110,3 +3183,5 @@ Future<dynamic> postOverrideStatus(
     throw Exception('Failed to post agent override');
   }
 }
+
+

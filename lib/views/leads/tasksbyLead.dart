@@ -223,7 +223,7 @@ class Taskcard extends StatelessWidget {
            task.customerMobileNumber!=null?   Text("${task.customerMobileNumber}"):Container(),
                  task.endTime !=null?   Text("${task.endTime!.split("T")[0]}"):Container(),
 
-  task.customerMobileNumber!=null&&  task.customerMobileNumber!=''? IconButton(
+  task.customerMobileNumber!=null&&  task.customerMobileNumber!='' && task.customerMobileNumber!.length !=1? IconButton(
                                       onPressed: () async {
                                         if (await Permission.phone
                                             .request()

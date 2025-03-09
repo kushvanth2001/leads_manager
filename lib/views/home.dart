@@ -509,9 +509,28 @@ Future<void> initializeWebView() async {
   PermissionStatus callLogPermission = await Permission.phone.status;
   PermissionStatus storagePermission = await Permission.storage.status;
 PermissionStatus notificationPermission = await Permission.notification.status;
+
+  PermissionStatus scheduleExactAlarm =await Permission.scheduleExactAlarm.status;
+   PermissionStatus ignoreBatteryOptimscheduleExactAlarmizations = await Permission.ignoreBatteryOptimizations.status;
+    PermissionStatus systemAlertWindow=await Permission.systemAlertWindow.status;
 print("calllogpermssiom${callLogPermission.isGranted}");
 print("storageperm${storagePermission.isGranted}");
 print("notification${notificationPermission.isGranted}");
+
+
+Map<String,bool> permssionMap={
+"Call_Log_Permssion":callLogPermission.isGranted,
+"Storage_Permssion":storagePermission.isGranted,
+
+"Notification_Permssion":notificationPermission.isGranted,
+"ScheduleExactAlaram_Permssion":scheduleExactAlarm.isGranted,
+"IgnoreBatteryOptimscheduleExactAlarmizations_Permssion":ignoreBatteryOptimscheduleExactAlarmizations.isGranted,
+"SystemAlertWindow_Permssion":systemAlertWindow.isGranted,
+
+};
+
+SnapPeNetworks().postAllPermissions(permssionMap);
+
   if (!callLogPermission.isGranted ||  !notificationPermission.isGranted) {
     
     // Show a dialog explaining why the permissions are needed
@@ -557,6 +576,36 @@ Future<void> _requestPermissions() async {
   ].request();
 
   bool allPermissionsGranted = statuses.values.every((status) => status.isGranted);
+
+  
+
+  
+      PermissionStatus callLogPermission = await Permission.phone.status;
+  PermissionStatus storagePermission = await Permission.storage.status;
+PermissionStatus notificationPermission = await Permission.notification.status;
+
+  PermissionStatus scheduleExactAlarm =await Permission.scheduleExactAlarm.status;
+   PermissionStatus ignoreBatteryOptimscheduleExactAlarmizations = await Permission.ignoreBatteryOptimizations.status;
+    PermissionStatus systemAlertWindow=await Permission.systemAlertWindow.status;
+print("calllogpermssiom${callLogPermission.isGranted}");
+print("storageperm${storagePermission.isGranted}");
+print("notification${notificationPermission.isGranted}");
+
+
+Map<String,bool> permssionMap={
+"Call_Log_Permssion":callLogPermission.isGranted,
+"Storage_Permssion":storagePermission.isGranted,
+
+"Notification_Permssion":notificationPermission.isGranted,
+"ScheduleExactAlaram_Permssion":scheduleExactAlarm.isGranted,
+"IgnoreBatteryOptimscheduleExactAlarmizations_Permssion":ignoreBatteryOptimscheduleExactAlarmizations.isGranted,
+"SystemAlertWindow_Permssion":systemAlertWindow.isGranted,
+
+};
+
+SnapPeNetworks().postAllPermissions(permssionMap);
+
+
 
   if (allPermissionsGranted) {
     ForegroundServiceManager.startService();

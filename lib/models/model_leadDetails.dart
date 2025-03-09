@@ -87,7 +87,7 @@ class LeadDetailsModel {
   DateTime? createdOn;
   TagsDto2? tagsDto;
   bool? isNoteAvailable;
-  String? assignedBy; //change this ie, create a assignedBy class
+  AssignedBy? assignedBy; //change this ie, create a assignedBy class
   PriorityId? priorityId;
   String? createdBy;
   String? potentialDealValue;
@@ -142,7 +142,7 @@ class LeadDetailsModel {
         createdOn: null,
         tagsDto: TagsDto2.fromJson(json["tagsDTO"]),
         isNoteAvailable: json['isNoteAvailable'],
-        assignedBy: null,
+        assignedBy: json['assignedBy']==null?null:AssignedBy.fromJson( json["assignedBy"]),
         priorityId: json["priorityId"] == null
             ? null
             : PriorityId.fromJson(json['priorityId']),
@@ -183,7 +183,7 @@ class LeadDetailsModel {
       'createdOn': createdOn == null ? null : createdOn!.toIso8601String(),
       'tagsDto': tagsDto == null ? null : tagsDto!.toJson(),
       'isNoteAvailable': isNoteAvailable,
-      'assignedBy': null,
+      'assignedBy':  assignedBy == null ? null : assignedBy!.toJson(),
       'priorityId': priorityId?.toJson(),
       'createdBy': createdBy,
       'potentialDealValue': potentialDealValue,

@@ -55,6 +55,7 @@ class AllLeadsStatus {
     this.lastModifiedBy,
     this.isActive,
     this.clientGroupId,
+this.color
   });
 
   String? status;
@@ -64,7 +65,9 @@ class AllLeadsStatus {
   dynamic lastModifiedTime;
   dynamic lastModifiedBy;
   bool? isActive;
+    String? color; 
   dynamic clientGroupId;
+
 
   factory AllLeadsStatus.fromJson(Map<String, dynamic> json) => AllLeadsStatus(
         status: json["status"],
@@ -75,6 +78,7 @@ class AllLeadsStatus {
         lastModifiedBy: json["lastModifiedBy"],
         isActive: json["isActive"],
         clientGroupId: json["clientGroupId"],
+        color:            json["color"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -86,6 +90,7 @@ class AllLeadsStatus {
         "lastModifiedBy": lastModifiedBy,
         "isActive": isActive,
         "clientGroupId": clientGroupId,
+        "color":color
       };
   dynamic operator [](String propertyName) {
     switch (propertyName) {
@@ -105,6 +110,8 @@ class AllLeadsStatus {
         return isActive;
       case 'clientGroupId':
         return clientGroupId;
+      case 'color':
+        return color;
       default:
         throw ArgumentError('Invalid property name: $propertyName');
     }

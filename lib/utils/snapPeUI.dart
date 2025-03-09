@@ -219,16 +219,78 @@ catch(e){
         title: "Please Select Merchant");
   }
 void addPrivileges(Map<String, dynamic> user) { 
-  if (user["role"] == null || user["role"]["features"] == null) { 
-    print("Role or features not found in user data."); return; } 
+  if (user["role"] == null  || user["role"]["features"] == null) { 
+    print("Role or features not found in user data."); return;
+     } 
+
+if(user["role"]['name'] == "Admin" ){
+   SharedPrefsHelper().setcanDeleteLeadPrivillage(true);
+SharedPrefsHelper().setviewcallLogsPrivillage(true);
+  SharedPrefsHelper().setviewCommnuicationsPrivillage(true);
+  SharedPrefsHelper().setviewOppurtunityPrivillage(true);
+  
+}
     for (var feature in user["role"]["features"]) { 
-      print(feature['name']); if (feature['name'] == "LeadManagement") {
+     
+      if (feature['name'] == "LeadManagement") {
          print(feature); if (feature['privilages'] == null) {
-           print("Privileges not found for LeadManagement."); return; }
-            for (var privi in feature['privilages']) { print(privi); 
+           print("Privileges not found for LeadManagement."); 
+           return; 
+           
+           }
+            for (var privi in feature['privilages']) { 
+        
             if (privi['name'] == "delete") { 
               
-              print('delete found'); SharedPrefsHelper().setcanDeleteLeadPrivillage(privi['checked']??true); } } }}} 
+
+               SharedPrefsHelper().setcanDeleteLeadPrivillage(privi['checked']??true);
+              
+               } 
+               
+               }
+                }else if(feature['name'] == "customer-conversations"){
+
+    for (var privi in feature['privilages']) { 
+        
+            if (privi['name'].toString().toLowerCase() == "view") { 
+              
+    SharedPrefsHelper().setviewCommnuicationsPrivillage(privi['checked']??true);
+              // SharedPrefsHelper().setcanDeleteLeadPrivillage(privi['checked']??true);
+              
+               } 
+               
+               }
+                }else if(feature['name'] == "call_logs"){
+
+    for (var privi in feature['privilages']) { 
+        
+            if (privi['name'].toString().toLowerCase() == "view") { 
+              
+SharedPrefsHelper().setviewcallLogsPrivillage(privi['checked']??true);
+              // SharedPrefsHelper().setcanDeleteLeadPrivillage(privi['checked']??true);
+              
+               } 
+               
+               }
+                }else if(feature['name'] == "OpportunityManagement"){
+
+   for (var privi in feature['privilages']) { 
+        
+            if (privi['name'].toString().toLowerCase() == "view") { 
+              
+SharedPrefsHelper().setviewOppurtunityPrivillage(privi['checked']??true);
+              // SharedPrefsHelper().setcanDeleteLeadPrivillage(privi['checked']??true);
+              
+               } 
+               
+               }
+                }
+
+
+
+
+                }
+                } 
   void selectedMerchant(BuildContext context, Merchant merchant) async {
     //  print("this is in selectedMerchant ${response.body} \n\\n\\n\n//n/n//nn/n//n/n/n//n//n\n\\n\n\\n//n/n/n//n//n\nn//n/n/n//n//n\nn\n\n\n");
     final snapPeUI = SnapPeUI();
